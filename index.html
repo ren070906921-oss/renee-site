@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renee · AI产品经理</title>
+    <!-- Google Fonts 手写字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@300;400;500;600;700&family=Dancing+Script:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* 奶油暖色调背景 */
+            --bg-cream: #FAF6F1;
+            --bg-warm: #F5EDE6;
+            --bg-light: #FFFDF9;
+            
+            /* 卡片背景 - 实底白色 */
+            --card-bg: #FFFFFF;
+            --card-border: rgba(180, 160, 140, 0.25);
+            
+            /* 主文字 - 深棕/深灰黑 */
+            --text-primary: #2D2A26;
+            --text-secondary: #5A5650;
+            --text-muted: #8A857D;
+            
+            /* 强调色 - 粉色系 */
+            --accent: #E8A0BF;
+            --accent-dark: #D4809F;
+            --accent-light: #F5E6EC;
+            --accent-bg: #FDF2F6;
+            
+            /* 辅助色 - 浅棕/米色/暖灰 */
+            --warm-brown: #C4A484;
+            --warm-beige: #E8DFD6;
+            --warm-gray: #D4CFC7;
+            
+            /* 导航栏 */
+            --nav-bg: rgba(250, 246, 241, 0.95);
+            --nav-border: rgba(180, 160, 140, 0.2);
+            --nav-height: 64px;
+        }
+
+        /* 手写体字体类 */
+        .handwriting-cn {
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+        
+        .handwriting-en {
+            font-family: 'Caveat', cursive;
+        }
+        
+        .dancing {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px; /* 导航栏高度偏移 */
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(180deg, var(--bg-cream) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.7;
+        }
+
+        /* ========== 导航栏 ========== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-height);
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--nav-border);
+            z-index: 1000;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.4s ease, opacity 0.4s ease, background 0.3s ease;
+        }
+
+        .navbar.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .navbar.scrolled {
+            background: rgba(250, 246, 241, 0.98);
+            box-shadow: 0 2px 20px rgba(232, 160, 191, 0.1);
+        }
+
+        .navbar-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .navbar-logo {
+            font-size: 20px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-logo:hover {
+            color: var(--accent-dark);
+        }
+
+        /* 语言切换按钮 */
+        .lang-toggle {
+            display: flex;
+            align-items: center;
+            padding: 6px 14px;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-light);
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .lang-toggle:hover {
+            background: var(--accent-light);
+            transform: scale(1.05);
+        }
+
+        .lang-toggle:active {
+            transform: scale(0.98);
+        }
+
+        .navbar-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .navbar-link {
+            position: relative;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-family: 'Space Grotesk', 'Noto Sans SC', sans-serif;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 20px;
+            transition: color 0.3s ease, background 0.3s ease;
+        }
+
+        .navbar-link:hover {
+            color: var(--text-primary);
+            background: var(--accent-light);
+        }
+
+        .navbar-link.active {
+            color: var(--accent-dark);
+            background: var(--accent-bg);
+        }
+
+        .navbar-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        /* 移动端菜单按钮 */
+        .navbar-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .navbar-toggle:hover {
+            background: var(--accent-light);
+        }
+
+        .navbar-toggle span {
+            display: block;
+            width: 20px;
+            height: 2px;
+            background: var(--text-primary);
+            border-radius: 2px;
+            transition: transform 0.3s, opacity 0.3s;
+            margin: 3px 0;
+        }
+
+        .navbar-toggle.active span:nth-child(1) {
+            transform: translateY(5px) rotate(45deg);
+        }
+
+        .navbar-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .navbar-toggle.active span:nth-child(3) {
+            transform: translateY(-5px) rotate(-45deg);
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 640px) {
+            .navbar-toggle {
+                display: flex;
+            }
+
+            .navbar-links {
+                position: absolute;
+                top: var(--nav-height);
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                background: rgba(255, 253, 249, 0.98);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                padding: 16px;
+                gap: 4px;
+                border-bottom: 1px solid var(--nav-border);
+                box-shadow: 0 4px 20px rgba(232, 160, 191, 0.08);
+                transform: translateY(-100%);
+                opacity: 0;
+                pointer-events: none;
+                transition: transform 0.3s ease, opacity 0.3s ease;
+            }
+
+            .navbar-links.open {
+                transform: translateY(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .navbar-link {
+                width: 100%;
+                text-align: center;
+                padding: 12px 16px;
+            }
+
+            .navbar-link.active::after {
+                display: none;
+            }
+        }
+
+        /* 装饰元素 - 温暖星星爱心 */
+        .deco-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .deco-star {
+            position: absolute;
+            font-size: 16px;
+            opacity: 0.4;
+            color: var(--accent);
+        }
+
+        .deco-heart {
+            position: absolute;
+            font-size: 14px;
+            opacity: 0.3;
+            color: var(--warm-brown);
+        }
+
+        .deco-dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--warm-beige);
+            opacity: 0.6;
+        }
+
+        .star-1 { top: 12%; left: 5%; animation: twinkle 3s ease-in-out infinite; }
+        .star-2 { top: 25%; right: 8%; animation: twinkle 4s ease-in-out infinite 0.5s; }
+        .star-3 { top: 45%; left: 3%; animation: twinkle 3.5s ease-in-out infinite 1s; }
+        .star-4 { top: 65%; right: 6%; animation: twinkle 4.5s ease-in-out infinite 0.3s; }
+        .star-5 { top: 85%; left: 8%; animation: twinkle 3s ease-in-out infinite 0.8s; }
+        .star-6 { top: 35%; right: 3%; animation: twinkle 5s ease-in-out infinite 1.2s; }
+
+        .heart-1 { top: 20%; right: 12%; animation: float 6s ease-in-out infinite; }
+        .heart-2 { top: 55%; left: 6%; animation: float 7s ease-in-out infinite 1s; }
+        .heart-3 { top: 78%; right: 10%; animation: float 5s ease-in-out infinite 0.5s; }
+
+        .dot-1 { top: 30%; left: 10%; }
+        .dot-2 { top: 50%; right: 5%; }
+        .dot-3 { bottom: 25%; left: 8%; }
+        .dot-4 { bottom: 40%; right: 12%; }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(10deg); }
+        }
+
+        /* 主容器 */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ========== Hero区 ========== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .hero-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 24px;
+            border: 3px solid var(--warm-beige);
+            box-shadow: 0 8px 32px rgba(232, 160, 191, 0.2);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            animation: fadeInDown 0.8s ease-out;
+            box-shadow: 0 2px 12px rgba(180, 160, 140, 0.1);
+        }
+
+        .hero-badge::before {
+            content: "✦";
+            color: var(--accent);
+        }
+
+        .hero h1 {
+            font-size: clamp(48px, 10vw, 80px);
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(18px, 3vw, 22px);
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 32px;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .hero-tag {
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-light);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--accent-dark);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s ease-in-out infinite;
+            color: var(--text-muted);
+        }
+
+        .scroll-hint svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        /* ========== 叙事区 ========== */
+        .narrative {
+            padding: 80px 0;
+        }
+
+        .narrative-title {
+            text-align: center;
+            font-size: clamp(28px, 5vw, 38px);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 60px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .narrative-title.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 手写体标题 */
+        .narrative-title.handwritten {
+            font-family: 'EB Garamond', 'Ma Shan Zheng', serif;
+            color: var(--accent-dark);
+            font-size: clamp(32px, 6vw, 44px);
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .abilities {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .ability-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 36px 28px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+            box-shadow: 0 4px 20px rgba(180, 160, 140, 0.08);
+        }
+
+        .ability-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .ability-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(232, 160, 191, 0.12);
+        }
+
+        .ability-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--accent-light), var(--accent-bg));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 26px;
+        }
+
+        /* 手写体关键词 */
+        .ability-title {
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--accent-dark);
+            margin-bottom: 10px;
+            font-family: 'EB Garamond', 'Ma Shan Zheng', serif;
+            letter-spacing: 0.02em;
+        }
+
+        .ability-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* ========== 项目展示区 ========== */
+        .projects {
+            padding: 80px 0 120px;
+        }
+
+        .projects-title {
+            text-align: center;
+            font-size: clamp(28px, 5vw, 38px);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 60px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .projects-title.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 手写体板块标题 */
+        .projects-title.handwritten {
+            font-family: 'EB Garamond', 'Ma Shan Zheng', serif;
+            color: var(--accent-dark);
+            font-size: clamp(32px, 6vw, 44px);
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 36px;
+            margin-bottom: 32px;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease-out;
+            box-shadow: 0 4px 20px rgba(180, 160, 140, 0.08);
+        }
+
+        .project-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .project-card:nth-child(2) {
+            transition-delay: 0.15s;
+        }
+
+        .project-card:nth-child(3) {
+            transition-delay: 0.3s;
+        }
+
+        .project-card:hover {
+            box-shadow: 0 12px 40px rgba(232, 160, 191, 0.1);
+        }
+
+        /* 项目头部 - 左右分栏布局 */
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .project-info {
+            flex: 1;
+        }
+
+        .project-name {
+            font-size: clamp(20px, 3.5vw, 26px);
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        .project-tagline {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+
+        /* 引用框 - 左侧粉色竖线 */
+        .project-quote {
+            background: var(--accent-bg);
+            border-left: 3px solid var(--accent);
+            padding: 14px 20px;
+            border-radius: 0 12px 12px 0;
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin: 20px 0;
+            line-height: 1.7;
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 18px;
+        }
+
+        /* 项目内容区 - 左右分栏 */
+        .project-body {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 28px;
+        }
+
+        @media (max-width: 700px) {
+            .project-body {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .project-header {
+                flex-direction: column;
+            }
+        }
+
+        .project-section h4 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .project-section p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* 工作列表 - 箭头引导 */
+        .project-works {
+            list-style: none;
+        }
+
+        .project-works li {
+            position: relative;
+            padding-left: 18px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .project-works li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* 项目标签 - 胶囊形 */
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .project-tag {
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-light);
+            padding: 5px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--accent-dark);
+        }
+
+        /* ========== 项目链接 ========== */
+        .project-links {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .link-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .project-link {
+            font-size: 13px;
+            color: var(--accent-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .project-link:hover {
+            color: var(--text-primary);
+            text-decoration: underline;
+        }
+
+        .link-separator {
+            color: var(--text-secondary);
+            opacity: 0.4;
+        }
+
+        /* ========== 产品思考占位区 ========== */
+        .thinking {
+            padding: 80px 0 120px;
+        }
+
+        .thinking-title {
+            text-align: center;
+            font-size: clamp(28px, 5vw, 38px);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 60px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .thinking-title.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .thinking-title.handwritten {
+            font-family: 'EB Garamond', 'Ma Shan Zheng', serif;
+            color: var(--accent-dark);
+            font-size: clamp(32px, 6vw, 44px);
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .thinking-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 28px;
+            max-width: 780px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 640px) {
+            .thinking-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+        }
+
+        .thinking-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 36px 28px 28px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+            box-shadow: 0 4px 20px rgba(180, 160, 140, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .thinking-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(180, 160, 140, 0.15);
+        }
+
+        .thinking-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .thinking-card:hover.visible {
+            transform: translateY(-4px);
+        }
+
+        .thinking-card-icon {
+            font-size: 42px;
+            margin-bottom: 4px;
+        }
+
+        .thinking-card-title {
+            font-family: 'EB Garamond', 'Ma Shan Zheng', serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: 0.02em;
+        }
+
+        .thinking-card-subtitle {
+            font-size: 13px;
+            color: var(--accent-dark);
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-light);
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-weight: 500;
+        }
+
+        .thinking-card-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .thinking-card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+            padding: 8px 20px;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-light);
+            border-radius: 50px;
+            color: var(--accent-dark);
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .thinking-card-link:hover {
+            background: var(--accent-dark);
+            color: #fff;
+            border-color: var(--accent-dark);
+        }
+
+        .thinking-card-link svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* ========== 个人兴趣区 ========== */
+        .interests {
+            padding: 80px 0 40px;
+            text-align: center;
+        }
+
+        .interests .section-title {
+            font-size: clamp(26px, 5vw, 36px);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 32px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .interests .section-title.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 手写体 个人生活 标题 */
+        .interests .section-title.handwritten {
+            font-family: 'EB Garamond', 'Ma Shan Zheng', serif;
+            color: var(--accent-dark);
+            font-size: clamp(36px, 7vw, 52px);
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .interests-intro {
+            margin-bottom: 40px;
+        }
+
+        .interests-intro-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--accent-dark);
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        .life-content {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .life-subtitle {
+            font-family: 'EB Garamond', 'Ma Shan Zheng', serif;
+            font-size: 22px;
+            color: var(--accent-dark);
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .life-desc {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .life-images {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .life-img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 16px;
+            border: 2px solid rgba(232, 160, 191, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .life-img:hover {
+            transform: translateY(-4px) rotate(-2deg);
+            box-shadow: 0 8px 24px rgba(232, 160, 191, 0.25);
+        }
+
+        @media (max-width: 768px) {
+            .life-images {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .life-img {
+                width: 260px;
+                height: 260px;
+            }
+        }
+
+        .running-cards {
+            position: relative;
+            max-width: 480px;
+            margin: 0 auto;
+            height: 560px;
+            perspective: 1200px;
+        }
+
+        .running-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.6s ease, opacity 0.6s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(180, 160, 140, 0.1);
+        }
+
+        .running-card.active {
+            transform: translateX(0) rotateY(0);
+            opacity: 1;
+            z-index: 3;
+        }
+
+        .running-card.next {
+            transform: translateX(30px) scale(0.92);
+            opacity: 0.5;
+            z-index: 2;
+        }
+
+        .running-card.prev {
+            transform: translateX(-100%) rotateY(30deg);
+            opacity: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .running-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .running-label {
+            padding: 14px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .running-cards {
+                height: 460px;
+            }
+        }
+
+        .flip-nav {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .flip-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--warm-beige);
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .flip-dot.active {
+            background: var(--accent);
+            transform: scale(1.3);
+        }
+
+        .flip-hint {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        /* ========== 联系区 ========== */
+        .contact {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .contact-title {
+            font-size: clamp(32px, 6vw, 48px);
+            font-weight: 700;
+            color: var(--accent-dark);
+            margin-bottom: 14px;
+            font-family: 'EB Garamond', serif;
+            letter-spacing: 0.02em;
+        }
+
+        .contact-desc {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 36px;
+            font-weight: 400;
+        }
+
+        /* 联系链接样式 */
+        .contact-links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .contact-link {
+            font-size: 15px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+            padding: 8px 20px;
+            background: var(--accent-bg);
+            border-radius: 50px;
+            border: 1px solid var(--accent-light);
+        }
+
+        .contact-link:hover {
+            color: var(--accent-dark);
+            background: var(--accent-light);
+        }
+
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* ========== 动画 ========== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== 响应式调整 ========== */
+        @media (max-width: 640px) {
+            .project-card {
+                padding: 28px;
+            }
+
+            .ability-card {
+                padding: 28px 20px;
+            }
+
+            .project-header {
+                flex-direction: column;
+            }
+
+            .thinking-card {
+                padding: 36px 24px;
+            }
+        }
+
+        /* ========== 装饰圆形 - 暖色 ========== */
+        .deco-circle {
+            position: fixed;
+            border-radius: 50%;
+            border: 1px solid rgba(232, 160, 191, 0.2);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .deco-1 {
+            width: 200px;
+            height: 200px;
+            top: 15%;
+            right: 5%;
+            animation: pulse 8s ease-in-out infinite;
+            border-color: rgba(196, 164, 132, 0.25);
+        }
+
+        .deco-2 {
+            width: 120px;
+            height: 120px;
+            bottom: 30%;
+            left: 3%;
+            animation: pulse 6s ease-in-out infinite reverse;
+            border-color: rgba(232, 160, 191, 0.2);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <div class="navbar-left">
+                <a href="#hero" class="navbar-logo" onclick="event.preventDefault();window.scrollTo({top:0,behavior:'smooth'})">Renee</a>
+                <button class="lang-toggle" id="langToggle">EN</button>
+            </div>
+            <button class="navbar-toggle" id="navbarToggle" aria-label="菜单">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="navbar-links" id="navbarLinks">
+                <li><a href="#projects" class="navbar-link" data-section="projects" data-i18n="nav_projects">项目经历</a></li>
+                <li><a href="#thinking" class="navbar-link" data-section="thinking" data-i18n="nav_thinking">产品思考</a></li>
+                <li><a href="#life" class="navbar-link" data-section="life" data-i18n="nav_life">个人生活</a></li>
+                <li><a href="#contact" class="navbar-link" data-section="contact" data-i18n="nav_contact">联系我</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 暖色装饰元素 -->
+    <div class="deco-elements">
+        <span class="deco-star star-1">✦</span>
+        <span class="deco-star star-2">✧</span>
+        <span class="deco-star star-3">✦</span>
+        <span class="deco-star star-4">✧</span>
+        <span class="deco-star star-5">✦</span>
+        <span class="deco-star star-6">✧</span>
+        <span class="deco-heart heart-1">♡</span>
+        <span class="deco-heart heart-2">♥</span>
+        <span class="deco-heart heart-3">♡</span>
+        <span class="deco-dot dot-1"></span>
+        <span class="deco-dot dot-2"></span>
+        <span class="deco-dot dot-3"></span>
+        <span class="deco-dot dot-4"></span>
+    </div>
+
+    <!-- 装饰圆形 -->
+    <div class="deco-circle deco-1"></div>
+    <div class="deco-circle deco-2"></div>
+
+    <div class="container">
+        <!-- Hero区 -->
+        <section class="hero" id="hero">
+            <img src="https://static.coze.site/7629344863888261376-data_volume/files/%E6%89%80%E6%9C%89%E5%AF%B9%E8%AF%9D/%E4%B8%BB%E5%AF%B9%E8%AF%9D/%E7%94%A8%E6%88%B7%E4%B8%8A%E4%BC%A0/%E5%A5%BD%E7%9C%8B%E4%BA%94%E4%BA%94_1778291269120_0_ho8n.jpg?sign=1780800194-95f28e800f-0-27a7a74a503360359c88c70095c80ffc813ba038aafaf7cd6ee309bf32a1d16e" alt="Renee" class="hero-avatar">
+            <div class="hero-badge" data-i18n="hero_badge">AI产品经理 · 在校生</div>
+            <h1>Renee</h1>
+            <p class="hero-subtitle" data-i18n="hero_subtitle">拥有工科逻辑的 AI 产品创作者，致力于用技术解决真实的效能问题。</p>
+            <div class="hero-tags">
+                <span class="hero-tag" data-i18n="hero_tag1">AI产品经理方向</span>
+                <span class="hero-tag" data-i18n="hero_tag2">用户研究</span>
+                <span class="hero-tag" data-i18n="hero_tag3">0-1落地</span>
+            </div>
+            <div class="scroll-hint">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12l7 7 7-7"/>
+                </svg>
+            </div>
+        </section>
+
+        <!-- 叙事区 -->
+        <section class="narrative">
+            <h2 class="narrative-title handwritten" data-i18n="narrative_title">做出来 · 停下来 · 深进去</h2>
+            <div class="abilities">
+                <div class="ability-card">
+                    <div class="ability-icon">🔨</div>
+                    <h3 class="ability-title" data-i18n="ability1_title">做出来</h3>
+                    <p class="ability-desc" data-i18n="ability1_desc">能把需求变成可落地的产品方案</p>
+                </div>
+                <div class="ability-card">
+                    <div class="ability-icon">🛑</div>
+                    <h3 class="ability-title" data-i18n="ability2_title">停下来</h3>
+                    <p class="ability-desc" data-i18n="ability2_desc">知道什么时候该叫停比闷头做更难</p>
+                </div>
+                <div class="ability-card">
+                    <div class="ability-icon">🔍</div>
+                    <h3 class="ability-title" data-i18n="ability3_title">深进去</h3>
+                    <p class="ability-desc" data-i18n="ability3_desc">能从用户聊天中提炼出可行动的洞察</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 项目展示区 -->
+        <section class="projects" id="projects">
+            <h2 class="projects-title handwritten" data-i18n="my_product_skills">我的产品能力</h2>
+
+            <!-- 项目一 -->
+            <article class="project-card">
+                <div class="project-header">
+                    <div class="project-info">
+                        <h3 class="project-name" data-i18n="project1_name">健身房卫生管理小程序</h3>
+                        <p class="project-tagline" data-i18n="project1_tagline">校园健身房卫生管理，从0到1落地双端产品</p>
+                    </div>
+                </div>
+                <div class="project-quote" data-i18n="project1_quote">
+                    "C端用户不是付费方，产品必须先打动B端"
+                </div>
+                <div class="project-body">
+                    <div class="project-section">
+                        <h4 data-i18n="project1_bg_title">项目背景</h4>
+                        <p data-i18n="project1_bg">发现"卫生差→体验差→更不爱护"恶性循环，切入B端付费+C端反馈闭环的商业模式。</p>
+                    </div>
+                    <div class="project-section">
+                        <h4 data-i18n="project1_work_title">我的工作</h4>
+                        <ul class="project-works">
+                            <li data-i18n="project1_work1">痛点挖掘：核心不是"用户素质低"，而是"反馈渠道缺失"</li>
+                            <li data-i18n="project1_work2">方案设计：匿名扫码反馈→工单制→进度透明闭环</li>
+                            <li data-i18n="project1_work3">双端架构：B端管理后台 + C端轻量入口</li>
+                            <li data-i18n="project1_work4">0-1全流程落地</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="project-tags">
+                    <span class="project-tag" data-i18n="project1_tag1">B端付费验证</span>
+                    <span class="project-tag" data-i18n="project1_tag2">双端错位洞察</span>
+                    <span class="project-tag" data-i18n="project1_tag3">匿名扫码机制</span>
+                </div>
+                <div class="project-links">
+                    <span class="link-label" data-i18n="demo_label">项目演示：</span>
+                    <a href="https://www.bilibili.com/video/BV1N2RDBxE1h/" target="_blank" rel="noopener noreferrer" class="project-link" data-i18n="project1_demo1">FitClean-Mini Program ↗</a>
+                    <span class="link-separator">·</span>
+                    <a href="https://dcns3lvnu8i1.feishu.cn/wiki/K9oFwuferidiYTkC1rlcXhqXnEb" target="_blank" rel="noopener noreferrer" class="project-link" data-i18n="project1_demo2">路演PPT ↗</a>
+                </div>
+            </article>
+
+            <!-- 项目二 -->
+            <article class="project-card">
+                <div class="project-header">
+                    <div class="project-info">
+                        <h3 class="project-name" data-i18n="project2_name">药匣子</h3>
+                        <p class="project-tagline" data-i18n="project2_tagline">主动终止的项目，比做完更有价值</p>
+                    </div>
+                </div>
+                <div class="project-quote" data-i18n="project2_quote">
+                    "做产品最大的成本不是做错，而是做下去不叫停"
+                </div>
+                <div class="project-body">
+                    <div class="project-section">
+                        <h4 data-i18n="project2_bg_title">项目背景</h4>
+                        <p data-i18n="project2_bg">探索AI+用药管理方向，发现用户与载体根本错位后及时叫停，避免资源浪费。</p>
+                    </div>
+                    <div class="project-section">
+                        <h4 data-i18n="project2_work_title">我的工作</h4>
+                        <ul class="project-works">
+                            <li data-i18n="project2_work1">小红书舆情分析，识别老人用药安全交叉痛点</li>
+                            <li data-i18n="project2_work2">设计拍照识别→AI解析→风险预警功能链路</li>
+                            <li data-i18n="project2_work3">主动评估发现"目标用户无法操作手机"的根本障碍</li>
+                            <li data-i18n="project2_work4">提炼方法论：需求验证必须先于方案设计</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="project-tags">
+                    <span class="project-tag" data-i18n="project2_tag1">主动止损</span>
+                    <span class="project-tag" data-i18n="project2_tag2">线上舆情≠真实需求</span>
+                    <span class="project-tag" data-i18n="project2_tag3">评委验证判断</span>
+                </div>
+                <div class="project-links">
+                    <span class="link-label" data-i18n="demo_label">项目演示：</span>
+                    <a href="https://www.bilibili.com/video/BV1M6RDB8E4L/" target="_blank" rel="noopener noreferrer" class="project-link" data-i18n="project2_demo">药匣子-medicine box ↗</a>
+                </div>
+            </article>
+
+            <!-- 项目三 -->
+            <article class="project-card">
+                <div class="project-header">
+                    <div class="project-info">
+                        <h3 class="project-name" data-i18n="project3_name">职路</h3>
+                        <p class="project-tagline" data-i18n="project3_tagline">10人深度访谈，修正"兴趣驱动"假设</p>
+                    </div>
+                </div>
+                <div class="project-quote" data-i18n="project3_quote">
+                    "兴趣≠可变现方向，需求不是发现兴趣，而是兴趣如何与生存和解"
+                </div>
+                <div class="project-body">
+                    <div class="project-section">
+                        <h4 data-i18n="project3_bg_title">项目背景</h4>
+                        <p data-i18n="project3_bg">帮二三本大学生从兴趣出发探索职业，通过用户研究修正了初始假设。</p>
+                    </div>
+                    <div class="project-section">
+                        <h4 data-i18n="project3_work_title">我的工作</h4>
+                        <ul class="project-works">
+                            <li data-i18n="project3_work1">10人半结构化深度访谈，共鸣式切入技巧</li>
+                            <li data-i18n="project3_work2">独立设计访谈提纲，逐层递进</li>
+                            <li data-i18n="project3_work3">豆瓣小红书冷启动，沉淀50名种子用户</li>
+                            <li data-i18n="project3_work4">用户分群体系设计 + 内测闭环搭建</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="project-tags">
+                    <span class="project-tag" data-i18n="project3_tag1">用户研究+种子运营</span>
+                    <span class="project-tag" data-i18n="project3_tag2">共鸣式访谈</span>
+                    <span class="project-tag" data-i18n="project3_tag3">假设修正</span>
+                </div>
+            </article>
+        </section>
+
+        <!-- 产品思考区 -->
+        <section class="thinking" id="thinking">
+            <h2 class="thinking-title handwritten" data-i18n="product_thinking">产品思考</h2>
+            <div class="thinking-grid">
+                <div class="thinking-card">
+                    <div class="thinking-card-icon">🎵</div>
+                    <div class="thinking-card-title" data-i18n="thinking_wy_title">网易云音乐</div>
+                    <span class="thinking-card-subtitle" data-i18n="thinking_wy_tag">AI产品战略分析</span>
+                    <p class="thinking-card-desc" data-i18n="thinking_wy_desc">从AI推荐引擎到社区生态，拆解网易云如何用AI重新定义音乐体验与用户粘性。</p>
+                    <a href="https://www.coze.cn/s/bAtIPu4Jtno/" target="_blank" class="thinking-card-link" data-i18n="thinking_view">
+                        查看分析 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+                </div>
+                <div class="thinking-card">
+                    <div class="thinking-card-icon">📕</div>
+                    <div class="thinking-card-title" data-i18n="thinking_xhs_title">小红书</div>
+                    <span class="thinking-card-subtitle" data-i18n="thinking_xhs_tag">AI产品战略分析</span>
+                    <p class="thinking-card-desc" data-i18n="thinking_xhs_desc">从内容生成到搜索推荐，拆解小红书如何用AI构建「种草」闭环与创作者生态。</p>
+                    <a href="https://www.coze.cn/s/bqjeGP8ew24/" target="_blank" class="thinking-card-link" data-i18n="thinking_view">
+                        查看分析 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 个人生活区 -->
+        <section class="interests" id="life">
+            <h2 class="section-title handwritten" data-i18n="life_title">个人生活</h2>
+            <div class="life-content">
+                <h3 class="life-subtitle" data-i18n="life_subtitle">🏃 运动 · 那个我坚持了很久的事情</h3>
+                <p class="life-desc" data-i18n="life_desc">每周三次规律跑步，3km→5km→7km逐步突破。从大一到大二，跑步已经成了我生活的一部分。它教会我的不只是体能，更是目标拆解与持续迭代的思维方式。</p>
+                <div class="life-images">
+                    <img src="https://static.coze.site/7629344863888261376-data_volume/files/%E6%89%80%E6%9C%89%E5%AF%B9%E8%AF%9D/%E4%B8%BB%E5%AF%B9%E8%AF%9D/%E7%94%A8%E6%88%B7%E4%B8%8A%E4%BC%A0/run04_1778305898510_0_g5ix.jpg?sign=1780811517-634f0c2323-0-76f71dff3c3ba2fafa3bc1c1ba210ae516a7abb967a3ac8ce24b93eacfad46ea" alt="跑步记录1" class="life-img" data-i18n-alt="run_alt1">
+                    <img src="https://static.coze.site/7629344863888261376-data_volume/files/%E6%89%80%E6%9C%89%E5%AF%B9%E8%AF%9D/%E4%B8%BB%E5%AF%B9%E8%AF%9D/%E7%94%A8%E6%88%B7%E4%B8%8A%E4%BC%A0/run05_1778305898510_1_nao5.jpg?sign=1780811517-c608489b3f-0-ad1ad33634cb130bb0dc4e1b0e7c75717e64fa3dce21a6060cf3b52a0e2e0339" alt="跑步记录2" class="life-img" data-i18n-alt="run_alt2">
+                    <img src="https://static.coze.site/7629344863888261376-data_volume/files/%E6%89%80%E6%9C%89%E5%AF%B9%E8%AF%9D/%E4%B8%BB%E5%AF%B9%E8%AF%9D/%E7%94%A8%E6%88%B7%E4%B8%8A%E4%BC%A0/run06_1778305898511_2_u0ah.jpg?sign=1780811517-60b5423683-0-bb3ad1954bb58c8d0e0c224afe3c63d58c17ed8532cae38b753d7d2cf27c9a7e" alt="跑步记录3" class="life-img" data-i18n-alt="run_alt3">
+                </div>
+            </div>
+        </section>
+
+        <!-- 底部联系区 -->
+        <section class="contact" id="contact">
+            <h2 class="contact-title">Let's Connect</h2>
+            <p class="contact-desc" data-i18n="contact_desc">如果你对产品感兴趣，或者想聊聊，欢迎联系我</p>
+            <div class="contact-links">
+                <a href="mailto:renjiameng@sxu.edu.cn" class="contact-link" data-i18n="email_label">📧 邮箱：renjiameng@sxu.edu.cn</a>
+                <span class="contact-link" data-i18n="wechat_label">💬 微信：17891212326</span>
+            </div>
+        </section>
+
+        <footer class="footer" data-i18n="footer">
+            © 2026 Renee · AI产品经理探索中
+        </footer>
+    </div>
+
+    <script>
+        // ========== 国际化翻译系统 ==========
+        const translations = {
+            zh: {
+                // 导航栏
+                nav_projects: '项目经历',
+                nav_thinking: '产品思考',
+                nav_life: '个人生活',
+                nav_contact: '联系我',
+                
+                // Hero区
+                hero_badge: 'AI产品经理 · 在校生',
+                hero_subtitle: '拥有工科逻辑的 AI 产品创作者，致力于用技术解决真实的效能问题。',
+                hero_tag1: 'AI产品经理方向',
+                hero_tag2: '用户研究',
+                hero_tag3: '0-1落地',
+                
+                // 叙事区
+                narrative_title: '做出来 · 停下来 · 深进去',
+                ability1_title: '做出来',
+                ability1_desc: '能把需求变成可落地的产品方案',
+                ability2_title: '停下来',
+                ability2_desc: '知道什么时候该叫停比闷头做更难',
+                ability3_title: '深进去',
+                ability3_desc: '能从用户聊天中提炼出可行动的洞察',
+                
+                // 项目区标题
+                my_product_skills: '我的产品能力',
+                
+                // 项目一
+                project1_name: '健身房卫生管理小程序',
+                project1_tagline: '校园健身房卫生管理，从0到1落地双端产品',
+                project1_quote: '"C端用户不是付费方，产品必须先打动B端"',
+                project1_bg_title: '项目背景',
+                project1_bg: '发现"卫生差→体验差→更不爱护"恶性循环，切入B端付费+C端反馈闭环的商业模式。',
+                project1_work_title: '我的工作',
+                project1_work1: '痛点挖掘：核心不是"用户素质低"，而是"反馈渠道缺失"',
+                project1_work2: '方案设计：匿名扫码反馈→工单制→进度透明闭环',
+                project1_work3: '双端架构：B端管理后台 + C端轻量入口',
+                project1_work4: '0-1全流程落地',
+                project1_tag1: 'B端付费验证',
+                project1_tag2: '双端错位洞察',
+                project1_tag3: '匿名扫码机制',
+                project1_demo1: 'FitClean-Mini Program ↗',
+                project1_demo2: '路演PPT ↗',
+                
+                // 项目二
+                project2_name: '药匣子',
+                project2_tagline: '主动终止的项目，比做完更有价值',
+                project2_quote: '"做产品最大的成本不是做错，而是做下去不叫停"',
+                project2_bg_title: '项目背景',
+                project2_bg: '探索AI+用药管理方向，发现用户与载体根本错位后及时叫停，避免资源浪费。',
+                project2_work_title: '我的工作',
+                project2_work1: '小红书舆情分析，识别老人用药安全交叉痛点',
+                project2_work2: '设计拍照识别→AI解析→风险预警功能链路',
+                project2_work3: '主动评估发现"目标用户无法操作手机"的根本障碍',
+                project2_work4: '提炼方法论：需求验证必须先于方案设计',
+                project2_tag1: '主动止损',
+                project2_tag2: '线上舆情≠真实需求',
+                project2_tag3: '评委验证判断',
+                project2_demo: '药匣子-medicine box ↗',
+                
+                // 项目三
+                project3_name: '职路',
+                project3_tagline: '10人深度访谈，修正"兴趣驱动"假设',
+                project3_quote: '"兴趣≠可变现方向，需求不是发现兴趣，而是兴趣如何与生存和解"',
+                project3_bg_title: '项目背景',
+                project3_bg: '帮二三本大学生从兴趣出发探索职业，通过用户研究修正了初始假设。',
+                project3_work_title: '我的工作',
+                project3_work1: '10人半结构化深度访谈，共鸣式切入技巧',
+                project3_work2: '独立设计访谈提纲，逐层递进',
+                project3_work3: '豆瓣小红书冷启动，沉淀50名种子用户',
+                project3_work4: '用户分群体系设计 + 内测闭环搭建',
+                project3_tag1: '用户研究+种子运营',
+                project3_tag2: '共鸣式访谈',
+                project3_tag3: '假设修正',
+                
+                // 产品思考
+                product_thinking: '产品思考',
+                thinking_wy_title: '网易云音乐',
+                thinking_wy_tag: 'AI产品战略分析',
+                thinking_wy_desc: '从AI推荐引擎到社区生态，拆解网易云如何用AI重新定义音乐体验与用户粘性。',
+                thinking_xhs_title: '小红书',
+                thinking_xhs_tag: 'AI产品战略分析',
+                thinking_xhs_desc: '从内容生成到搜索推荐，拆解小红书如何用AI构建「种草」闭环与创作者生态。',
+                thinking_view: '查看分析',
+                
+                // 个人生活
+                life_title: '个人生活',
+                life_subtitle: '🏃 运动 · 那个我坚持了很久的事情',
+                life_desc: '每周三次规律跑步，3km→5km→7km逐步突破。从大一到大二，跑步已经成了我生活的一部分。它教会我的不只是体能，更是目标拆解与持续迭代的思维方式。',
+                run_alt1: '跑步记录1',
+                run_alt2: '跑步记录2',
+                run_alt3: '跑步记录3',
+                
+                // 联系区
+                contact_desc: '如果你对产品感兴趣，或者想聊聊，欢迎联系我',
+                email_label: '📧 邮箱：renjiameng@sxu.edu.cn',
+                wechat_label: '💬 微信：17891212326',
+                
+                // Footer
+                footer: '© 2026 Renee · AI产品经理探索中',
+                
+                // 通用
+                demo_label: '项目演示：'
+            },
+            en: {
+                // 导航栏
+                nav_projects: 'Projects',
+                nav_thinking: 'Product Thinking',
+                nav_life: 'Life',
+                nav_contact: 'Contact',
+                
+                // Hero区
+                hero_badge: 'AI Product Manager · Student',
+                hero_subtitle: 'AI product creator with engineering logic, dedicated to solving real efficiency problems with technology.',
+                hero_tag1: 'AI PM Track',
+                hero_tag2: 'User Research',
+                hero_tag3: '0-to-1 Execution',
+                
+                // 叙事区
+                narrative_title: 'Build It · Stop It · Dig Deep',
+                ability1_title: 'Build It',
+                ability1_desc: 'Turn requirements into shippable product solutions',
+                ability2_title: 'Stop It',
+                ability2_desc: 'Knowing when to stop is harder than pushing forward',
+                ability3_title: 'Dig Deep',
+                ability3_desc: 'Extract actionable insights from user conversations',
+                
+                // 项目区标题
+                my_product_skills: 'My Product Skills',
+                
+                // 项目一
+                project1_name: 'FitClean - Hygiene Management Mini Program',
+                project1_tagline: 'Campus gym hygiene management, 0-to-1 dual-end product',
+                project1_quote: '"End users don\'t pay — you must win the B-side first"',
+                project1_bg_title: 'Background',
+                project1_bg: 'Identified a "dirty→poor experience→less care" vicious cycle, built a B2B2C feedback loop model.',
+                project1_work_title: 'My Work',
+                project1_work1: 'Pain point: Not "low user quality", but "missing feedback channels"',
+                project1_work2: 'Solution: Anonymous QR feedback → ticket system → transparent progress tracking',
+                project1_work3: 'Dual-end architecture: B-side admin + C-side lightweight entry',
+                project1_work4: '0-to-1 full process execution',
+                project1_tag1: 'B-side payment validation',
+                project1_tag2: 'Dual-end mismatch insight',
+                project1_tag3: 'Anonymous QR mechanism',
+                project1_demo1: 'FitClean-Mini Program ↗',
+                project1_demo2: 'Pitch Deck ↗',
+                
+                // 项目二
+                project2_name: 'MedicineBox',
+                project2_tagline: 'A stopped project is more valuable than a finished wrong one',
+                project2_quote: '"The biggest cost isn\'t being wrong — it\'s not stopping when you should"',
+                project2_bg_title: 'Background',
+                project2_bg: 'Explored AI+medication management, stopped after finding fundamental user-medium mismatch, avoiding resource waste.',
+                project2_work_title: 'My Work',
+                project2_work1: 'Xiaohongshu sentiment analysis, identified elderly medication safety pain points',
+                project2_work2: 'Designed photo recognition → AI parsing → risk alert pipeline',
+                project2_work3: 'Proactively assessed and found the root barrier: "target users can\'t operate phones"',
+                project2_work4: 'Methodology: Need validation must precede solution design',
+                project2_tag1: 'Proactive stop-loss',
+                project2_tag2: 'Online sentiment ≠ real demand',
+                project2_tag3: 'Judges validated the call',
+                project2_demo: 'MedicineBox ↗',
+                
+                // 项目三
+                project3_name: 'CareerPath',
+                project3_tagline: '10 deep interviews, corrected the "passion-driven" assumption',
+                project3_quote: '"Interest ≠ monetizable direction. The need isn\'t finding passion — it\'s reconciling passion with survival"',
+                project3_bg_title: 'Background',
+                project3_bg: 'Helped second-tier college students explore careers from interests, corrected initial assumptions through user research.',
+                project3_work_title: 'My Work',
+                project3_work1: '10 semi-structured deep interviews, empathetic entry technique',
+                project3_work2: 'Independently designed interview guide, progressive questioning',
+                project3_work3: 'Douban & Xiaohongshu cold start, built 50 seed users',
+                project3_work4: 'User segmentation design + closed-loop beta testing',
+                project3_tag1: 'User Research + Seed Ops',
+                project3_tag2: 'Empathetic Interviewing',
+                project3_tag3: 'Assumption Correction',
+                
+                // 产品思考
+                product_thinking: 'Product Thinking',
+                thinking_wy_title: 'NetEase Cloud Music',
+                thinking_wy_tag: 'AI Product Strategy',
+                thinking_wy_desc: 'From AI recommendation engine to community ecosystem — deconstructing how NetEase Cloud redefines music experience and user retention with AI.',
+                thinking_xhs_title: 'Xiaohongshu',
+                thinking_xhs_tag: 'AI Product Strategy',
+                thinking_xhs_desc: 'From content generation to search & recommendation — deconstructing how Xiaohongshu builds the "seeding" loop and creator ecosystem with AI.',
+                thinking_view: 'View Analysis',
+                
+                // 个人生活
+                life_title: 'Life',
+                life_subtitle: '🏃 Running · The thing I\'ve stuck with the longest',
+                life_desc: 'Running three times a week, progressing from 3km→5km→7km. From freshman to sophomore year, running has become part of my life. It taught me not just physical endurance, but the mindset of breaking down goals and iterating continuously.',
+                run_alt1: 'Running record 1',
+                run_alt2: 'Running record 2',
+                run_alt3: 'Running record 3',
+                
+                // 联系区
+                contact_desc: 'If you\'re interested in product or just want to chat, feel free to reach out',
+                email_label: '📧 Email: renjiameng@sxu.edu.cn',
+                wechat_label: '💬 WeChat: 17891212326',
+                
+                // Footer
+                footer: '© 2026 Renee · Exploring AI Product Management',
+                
+                // 通用
+                demo_label: 'Demo: '
+            }
+        };
+
+        // 语言切换功能
+        (function() {
+            const STORAGE_KEY = 'renee_lang';
+            let currentLang = localStorage.getItem(STORAGE_KEY) || 'zh';
+            const langToggle = document.getElementById('langToggle');
+            
+            // 更新按钮文字
+            function updateToggleText() {
+                langToggle.textContent = currentLang === 'zh' ? 'EN' : '中';
+            }
+            
+            // 翻译所有元素
+            function translatePage(lang) {
+                const t = translations[lang];
+                
+                // 翻译所有带 data-i18n 属性的元素
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (t[key]) {
+                        el.textContent = t[key];
+                    }
+                });
+                
+                // 翻译所有带 data-i18n-alt 属性的元素
+                document.querySelectorAll('[data-i18n-alt]').forEach(el => {
+                    const key = el.getAttribute('data-i18n-alt');
+                    if (t[key]) {
+                        el.alt = t[key];
+                    }
+                });
+                
+                // 更新 HTML lang 属性
+                document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+                
+                // 更新 title
+                document.title = lang === 'zh' ? 'Renee · AI产品经理' : 'Renee · AI Product Manager';
+            }
+            
+            // 切换语言
+            function toggleLanguage() {
+                currentLang = currentLang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem(STORAGE_KEY, currentLang);
+                updateToggleText();
+                translatePage(currentLang);
+            }
+            
+            // 初始化
+            updateToggleText();
+            translatePage(currentLang);
+            
+            // 绑定事件
+            langToggle.addEventListener('click', toggleLanguage);
+        })();
+
+        // ========== 导航栏滚动渐显 ==========
+        (function() {
+            const navbar = document.getElementById('navbar');
+            const heroHeight = window.innerHeight * 0.6; // Hero区60%高度
+            
+            function updateNavbar() {
+                const scrollY = window.scrollY;
+                
+                // 滚动超过Hero区后显示导航栏
+                if (scrollY > heroHeight) {
+                    navbar.classList.add('visible');
+                    // 滚动一定距离后加深背景
+                    if (scrollY > heroHeight + 100) {
+                        navbar.classList.add('scrolled');
+                    } else {
+                        navbar.classList.remove('scrolled');
+                    }
+                } else {
+                    navbar.classList.remove('visible', 'scrolled');
+                }
+            }
+
+            window.addEventListener('scroll', updateNavbar, { passive: true });
+            updateNavbar();
+        })();
+
+        // ========== 移动端菜单切换 ==========
+        (function() {
+            const toggle = document.getElementById('navbarToggle');
+            const links = document.getElementById('navbarLinks');
+
+            toggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                links.classList.toggle('open');
+            });
+
+            // 点击导航链接后关闭菜单 + 平滑滚动跳转
+            links.querySelectorAll('.navbar-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    toggle.classList.remove('active');
+                    links.classList.remove('open');
+
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        const navHeight = document.querySelector('.navbar').offsetHeight;
+                        const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - navHeight;
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        })();
+
+        // ========== 导航高亮 - IntersectionObserver ==========
+        (function() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.navbar-link');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '-20% 0px -60% 0px', // 视口中间20%区域
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.id;
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.dataset.section === id);
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                if (section.id) {
+                    observer.observe(section);
+                }
+            });
+        })();
+
+        // ========== 滚动动画 - IntersectionObserver ==========
+        (function() {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            // 需要动画的元素
+            const animatedElements = document.querySelectorAll(
+                '.narrative-title, .ability-card, .projects-title, .project-card, .thinking-title, .thinking-card, .section-title'
+            );
+
+            animatedElements.forEach(el => {
+                observer.observe(el);
+            });
+        })();
+    </script>
+</body>
+</html>
